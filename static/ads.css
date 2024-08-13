@@ -1,0 +1,64 @@
+/* static/css/popup_ad.css */
+
+.ads-img{
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    object-position: center;
+}
+.popup-ad {
+    /* display: none; */
+    position: fixed;
+    z-index: 999;
+    right: 0;
+    top: 0;
+    min-height: fit-content;
+    width: fit-content;
+    max-width: 60vw;
+    height: 100px;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.popup-ad-content {
+    background-color: #fefefe;
+    padding: 5px;
+    border: 1px solid #888;
+    width: 100%;
+}
+
+.close-ad {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-ad:hover,
+.close-ad:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ad-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.ad-link:hover {
+    background-color: #45a049;
+}
+.flex{
+    display: flex;
+    align-items: center;
+gap: 10px;
+}
+.info{
+    flex: 3;
+}

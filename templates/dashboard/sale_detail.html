@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}
+
+{% block free_content %}
+<div class="container mt-5">
+    <h1>Sale Detail</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ sale.product.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Purchased by {{ sale.user.username }}</h6>
+            
+            <table class="table table-borderless">
+                <tr>
+                    <th>Quantity:</th>
+                    <td>{{ sale.quantity }}</td>
+                </tr>
+                <tr>
+                    <th>Amount:</th>
+                    <td>${{ sale.amount }}</td>
+                </tr>
+                <tr>
+                    <th>Date:</th>
+                    <td>{{ sale.created_at|date:"F d, Y H:i" }}</td>
+                </tr>
+            </table>
+            
+            <h6 class="mt-4">Product Details:</h6>
+            <p>{{ sale.product.description }}</p>
+            
+            {% if sale.product.image %}
+                <img src="{{ sale.product.image.url }}" alt="{{ sale.product.name }}" class="img-fluid mt-3">
+            {% endif %}
+        </div>
+    </div>
+    
+    <a href="{% url 'sale_list' %}" class="btn btn-secondary mt-3">Back to Sales List</a>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_filters %}
+
+{% block title %}Create Order{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Create Order</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post">
+                {% csrf_token %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Shipping Information</h3>
+                        {{ form.shipping_address.label_tag }}
+                        {{ form.shipping_address }}
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Billing Information</h3>
+                        <div class="form-check mb-3">
+                            {{ form.use_different_billing_address }}
+                            <label class="form-check-label" for="{{ form.use_different_billing_address.id_for_label }}">
+                                Use a different billing address
+                            </label>
+                        </div>
+                        <div id="billing_address_fields" style="display: none;">
+                            {{ form.billing_address.label_tag }}
+                            {{ form.billing_address }}
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Order Summary</h3>
+                    <ul class="list-group list-group-flush">
+                        {% for item in cart %}
+                            <li class="list-group-item">
+                                {{ item.product.name }} - {{ item.quantity }} x ${{ item.product.price }}
+                                <span class="mx-4">${{ item.product.price|multiply:item.quantity }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="mt-3">
+                        <strong>Total: ${{ total }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const useDifferentBillingAddress = document.getElementById('{{ form.use_different_billing_address.id_for_label }}');
+        const billingAddressFields = document.getElementById('billing_address_fields');
+
+        useDifferentBillingAddress.addEventListener('change', function() {
+            if (this.checked) {
+                billingAddressFields.style.display = 'block';
+            } else {
+                billingAddressFields.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

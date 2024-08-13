@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{% static "hero-bg.jpg" %}') no-repeat center center;
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    .category-card {
+        transition: transform 0.3s;
+    }
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+    .testimonial-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-3 mb-4">Discover Unique Treasures</h1>
+        <p class="lead mb-5">Shop from a curated collection of handcrafted and exclusive items.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">Shop Now</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose Us</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <i class="bi bi-gift feature-icon text-primary"></i>
+                <h3>Unique Products</h3>
+                <p>Discover one-of-a-kind items you won't find anywhere else.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <i class="bi bi-shield-check feature-icon text-primary"></i>
+                <h3>Secure Shopping</h3>
+                <p>Shop with confidence knowing your transactions are safe and secure.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <i class="bi bi-truck feature-icon text-primary"></i>
+                <h3>Fast Delivery</h3>
+                <p>Get your items quickly with our efficient shipping process.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Shop by Category</h2>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-4 mb-4">
+                <div class="card category-card">
+                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <a href="{% url 'category_products' category.slug %}" class="btn btn-outline-primary">View Products</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Products</h2>
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="{{ product.images.first.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">${{ product.price }}</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to start shopping?</h2>
+        <a href="{% url 'product_list' %}" class="btn btn-light btn-lg">Explore Our Collection</a>
+    </div>
+</section>
+{% endblock %}

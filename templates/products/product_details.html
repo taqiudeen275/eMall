@@ -1,0 +1,360 @@
+<!-- products/templates/products/product_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Product Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* static/css/product_detail.css */
+
+.carousel-item img {
+    object-fit: cover;
+    height: 400px;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.description {
+    white-space: pre-line;
+}
+
+.stock .badge {
+    font-size: 0.9rem;
+}
+
+.seller {
+    font-style: italic;
+}
+
+.review-form {
+    margin-top: 2rem;
+}
+
+.related-product img {
+    height: 100px;
+    object-fit: cover;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ product.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ product.name }}</h1>
+            <p class="text-muted">Category: <a href="{% url 'category_products' product.category.id %}">{{ product.category.name }}</a></p>
+            <p class="price">${{ product.price }}</p>
+            <p class="description">{{ product.description }}</p>
+            <p class="stock">
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success">In Stock</span> {{ product.stock }} available
+                {% else %}
+                    <span class="badge bg-danger">Out of Stock</span>
+                {% endif %}
+            </p>
+            <p class="seller">Sold by: <a href="#">{{ product.business.username }}</a></p>
+            
+            {% if product.stock > 0 %}
+                <form method="post" action="{% url 'add_to_cart' product.id %}" class="d-flex align-items-center">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control me-2" style="width: 70px;">
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <h2>Customer Reviews</h2>
+            {% if product.reviews.exists %}
+                {% for review in product.reviews.all %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ review.user.username }}</h5>
+                            <p class="card-text">{{ review.comment }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">Rating: {{ review.rating }} / 5</small>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet. Be the first to review this product!</p>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <h3>Add a Review</h3>
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select name="rating" id="rating" class="form-select" required>
+                            <option value="">Select a rating</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Your Review</label>
+                        <textarea name="comment" id="comment" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">log in</a> to leave a review.</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <h2>Related Products</h2>
+            {% for related_product in related_products %}
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            {% if related_product.images.exists %}
+                                <img src="{{ related_product.images.first.image.url }}" class="img-fluid rounded-start" alt="{{ related_product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ related_product.name }}</h5>
+                                <p class="card-text">${{ related_product.price }}</p>
+                                <a href="{% url 'product_detail' related_product.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // static/js/product_detail.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Image zoom functionality
+    const productImages = document.querySelectorAll('#productCarousel .carousel-item img');
+    productImages.forEach(img => {
+        img.addEventListener('mousemove', function(e) {
+            const zoomer = e.currentTarget;
+            const offsetX = e.offsetX ? e.offsetX : e.touches[0].pageX;
+            const offsetY = e.offsetY ? e.offsetY : e.touches[0].pageY;
+            const x = offsetX / zoomer.offsetWidth * 100;
+            const y = offsetY / zoomer.offsetHeight * 100;
+            zoomer.style.backgroundPosition = x + '% ' + y + '%';
+        });
+    });
+
+    // Quantity input validation
+    const quantityInput = document.querySelector('input[name="quantity"]');
+    if (quantityInput) {
+        quantityInput.addEventListener('change', function() {
+            const max = parseInt(this.getAttribute('max'));
+            const value = parseInt(this.value);
+            if (value > max) {
+                this.value = max;
+            } else if (value < 1) {
+                this.value = 1;
+            }
+        });
+    }
+    
+
+    $(document).ready(function() {
+    $('#add-to-cart-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(data) {
+                $('#cart-message').text(data.message).removeClass('text-danger').addClass('text-success');
+                // Update cart count in navbar or wherever you display it
+                $('#cart-count').text(data.cart_total);
+            },
+            error: function(xhr) {
+                var data = xhr.responseJSON;
+                $('#cart-message').text(data.message).removeClass('text-success').addClass('text-danger');
+            }
+        });
+    });
+});
+
+    // Add to cart AJAX functionality
+    // const addToCartForm = document.querySelector('form[action^="/cart/add/"]');
+    // if (addToCartForm) {
+    //     addToCartForm.addEventListener('submit', function(e) {
+    //         e.preventDefault();
+    //         const formData = new FormData(this);
+
+    //         fetch(this.action, {
+    //             method: 'GET',
+    //             body: formData,
+    //             headers: {
+    //                 'X-Requested-With': 'XMLHttpRequest',
+    //                 'X-CSRFToken': getCookie('csrftoken')
+    //             }
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 showNotification('Product added to cart successfully!', 'success');
+    //                 updateCartCount(data.cart_count);
+    //             } else {
+    //                 showNotification('Failed to add product to cart.', 'error');
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             showNotification('An error occurred. Please try again.', 'error');
+    //         });
+    //     });
+    // }
+
+    // Review submission AJAX functionality
+    const reviewForm = document.querySelector('form[action^="/review/"]');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Your review has been submitted successfully!', 'success');
+                    // Optionally, you can update the reviews section without reloading the page
+                    updateReviews(data.review);
+                } else {
+                    showNotification('Failed to submit review.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+            });
+        });
+    }
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Helper function to show notifications
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.role = 'alert';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        document.body.insertBefore(notification, document.body.firstChild);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
+
+    // Helper function to update cart count in navbar
+    function updateCartCount(count) {
+        const cartCountElement = document.querySelector('#cart-count');
+        if (cartCountElement) {
+            cartCountElement.textContent = count;
+        }
+    }
+
+    // Helper function to update reviews section
+    function updateReviews(review) {
+        const reviewsContainer = document.querySelector('#reviews-container');
+        if (reviewsContainer) {
+            const newReview = document.createElement('div');
+            newReview.className = 'card mb-3';
+            newReview.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${review.user}</h5>
+                    <p class="card-text">${review.comment}</p>
+                    <p class="card-text">
+                        <small class="text-muted">Rating: ${review.rating} / 5</small>
+                    </p>
+                </div>
+            `;
+            reviewsContainer.insertBefore(newReview, reviewsContainer.firstChild);
+        }
+    }
+});
+
+// Add image zoom CSS
+document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        #productCarousel .carousel-item img {
+            transition: transform .2s;
+            cursor: zoom-in;
+        }
+        #productCarousel .carousel-item img:hover {
+            transform: scale(1.5);
+        }
+    </style>
+`);
+</script>
+{% endblock %}

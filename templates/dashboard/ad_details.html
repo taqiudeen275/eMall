@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+
+{% block free_content %}
+<div class="container mt-5">
+    <h1>{{ ad.title }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <p><strong>Description:</strong> {{ ad.description }}</p>
+            <p><strong>Position:</strong> {{ ad.get_position_display }}</p>
+            <p><strong>Start Date:</strong> {{ ad.start_date }}</p>
+            <p><strong>End Date:</strong> {{ ad.end_date }}</p>
+            <p><strong>Status:</strong> {% if ad.is_active %}Active{% else %}Inactive{% endif %}</p>
+            <p><strong>Clicks:</strong> {{ ad.clicks }}</p>
+            <p><strong>Impressions:</strong> {{ ad.impressions }}</p>
+            <p><strong>Created By:</strong> {{ ad.created_by }}</p>
+            <p><strong>Created At:</strong> {{ ad.created_at }}</p>
+            <p><strong>Last Updated:</strong> {{ ad.updated_at }}</p>
+            <p><strong>Approval Status:</strong> {% if ad.is_approved %}Approved{% else %}Not Approved{% endif %}</p>
+            <p><strong>Current:</strong> {% if ad.is_current %}Yes{% else %}No{% endif %}</p>
+            
+            {% if ad.url %}
+                <a href="{{ ad.url }}" class="btn btn-primary" target="_blank">Visit Ad Link</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

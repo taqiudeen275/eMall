@@ -1,0 +1,119 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Product Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+    .additional-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .status-badge {
+        font-size: 0.9em;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+    .card:hover {
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block free_content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Product Details: {{ product.name }}</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="product-image mb-3">
+                        </div>
+                        <div class="col-md-6">
+                            <h2>{{ product.name }}</h2>
+                            <p class="text-muted">Category: {{ product.category.name }}</p>
+                            <p class="h4">${{ product.price }}</p>
+                            <p>Stock: {{ product.stock }}</p>
+                            <p>
+                                {% if product.available %}
+                                    <span class="badge bg-success status-badge">Available</span>
+                                {% else %}
+                                    <span class="badge bg-danger status-badge">Not Available</span>
+                                {% endif %}
+                                {% if in_stock %}
+                                    <span class="badge bg-info status-badge">In Stock</span>
+                                {% else %}
+                                    <span class="badge bg-warning status-badge">Out of Stock</span>
+                                {% endif %}
+                                {% if low_stock %}
+                                    <span class="badge bg-warning status-badge">Low Stock</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <h3 class="mt-4">Description</h3>
+                    <p>{{ product.description }}</p>
+                    <h3 class="mt-4">Additional Images</h3>
+                    <div class="d-flex flex-wrap">
+                        {% for image in product.images.all %}
+                                <img src="{{ image.image.url }}" alt="Additional Image" class="additional-image">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Sales Information</h3>
+                    <p>Total Sales: {{ total_sales }}</p>
+                    <p>Revenue: ${{ revenue|floatformat:2 }}</p>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <button class="btn btn-danger btn-block" data-bs-toggle="modal" data-bs-target="#deleteProductModal">Delete Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteProductModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this product? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
