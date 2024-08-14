@@ -96,7 +96,7 @@
             {% endif %}
         </div>
     </div>
-
+    <p class="seller mt-5">Sold by: <a href="{% url 'public_business_profile' product.business.id %}">{{ product.business.business_name }}</a></p>
     <div class="row mt-5">
         <div class="col-md-8">
             <h2>Customer Reviews</h2>
@@ -116,29 +116,13 @@
                 <p>No reviews yet. Be the first to review this product!</p>
             {% endif %}
 
-            {% if user.is_authenticated %}
-                <h3>Add a Review</h3>
-                <form method="post" action="#">
+            <h2 class="mt-5">Reviews</h2>
+            {% if not user_review %}
+                <form method="post" class="mb-4">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="rating" class="form-label">Rating</label>
-                        <select name="rating" id="rating" class="form-select" required>
-                            <option value="">Select a rating</option>
-                            <option value="5">5 - Excellent</option>
-                            <option value="4">4 - Very Good</option>
-                            <option value="3">3 - Good</option>
-                            <option value="2">2 - Fair</option>
-                            <option value="1">1 - Poor</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="comment" class="form-label">Your Review</label>
-                        <textarea name="comment" id="comment" class="form-control" rows="3" required></textarea>
-                    </div>
+                    {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">Submit Review</button>
                 </form>
-            {% else %}
-                <p>Please <a href="{% url 'login' %}">log in</a> to leave a review.</p>
             {% endif %}
         </div>
         <div class="col-md-4">
@@ -148,7 +132,7 @@
                     <div class="row g-0">
                         <div class="col-md-4">
                             {% if related_product.images.exists %}
-                                <img src="{{ related_product.images.first.image.url }}" class="img-fluid rounded-start" alt="{{ related_product.name }}">
+                                <img src="{{ related_product.images.first.image.url }}" class="img-fluid  rounded-start" alt="{{ related_product.name }}">
                             {% endif %}
                         </div>
                         <div class="col-md-8">

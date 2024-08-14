@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Successful{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title text-success">
+                        <i class="fas fa-check-circle"></i> Order Placed Successfully!
+                    </h2>
+                    <p class="card-text">
+                        Thank you for your purchase. Your order has been received and is being processed.
+                    </p>
+                
+                    <p class="card-text">
+                        We've sent a confirmation email to <strong>{{ user.email }}</strong> with the order details.
+                    </p>
+                    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

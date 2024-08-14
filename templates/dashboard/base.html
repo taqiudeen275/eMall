@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}E-Commerce Platform{% endblock %}</title>
+    <title>{% block title %}{{user.business.business_name}} Dashboard{% endblock %}</title>
 
     <!-- Bootstrap CSS -->
 
@@ -71,7 +71,7 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar bg-dark">
             <div class="sidebar-header ">
-                <h3>Business Dashboard</h3>
+                <h3>{{user.business.business_name}} Dashboard</h3>
             </div>
             <ul class="list-unstyled components">
                 <li class="active">
@@ -133,8 +133,9 @@
                         <i class="fa fa-list"></i>
                     </button>
                     <div>
-                        <a href="{% url 'home'%}" class="btn btn-secondary">Home</a>
-                        <a href="{% url 'account:logout'%}" class="btn btn-secondary">Logout</a>
+                        <a href="{% url 'home'%}" class="btn btn-outline-info"><i class="fa fa-home"></i> Home</a>
+                        <a href="{% url 'business_detail' %}" class="btn btn-outline-success"><i class="fa fa-user"></i> Profile</a>
+                        <a href="{% url 'account:logout'%}" class="btn btn-danger"><i class="fa fa-sign-out"></i></a>
                     </div>
                 </div>
             </nav>

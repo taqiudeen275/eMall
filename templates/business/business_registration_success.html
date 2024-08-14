@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Business Registration Successful{% endblock %}
+
+{% block free_content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title text-success">
+                        <i class="fas fa-check-circle"></i> Business Registration Successful!
+                    </h2>
+                    <p class="card-text">
+                        Congratulations! Your business has been successfully registered on our platform.
+                    </p>
+                    <h4>Business Details:</h4>
+                    <ul class="list-unstyled">
+                        <li><strong>Business Name:</strong> {{ business.business_name }}</li>
+                        <li><strong>Description:</strong> {{ business.description|truncatewords:20 }}</li>
+                        {% if business.website %}
+                            <li><strong>Website:</strong> <a href="{{ business.website }}" target="_blank">{{ business.website }}</a></li>
+                        {% endif %}
+                        {% if business.phone %}
+                            <li><strong>Phone:</strong> {{ business.phone }}</li>
+                        {% endif %}
+                    </ul>
+                    <p class="card-text mt-4">
+                        You can now start selling your products and managing your business through our platform.
+                    </p>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Go to Business Dashboard</a>
+                    <a href="{% url 'product_add' %}" class="btn btn-secondary mt-3">Add Your First Product</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

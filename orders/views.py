@@ -1,7 +1,7 @@
 from django.views.generic import CreateView,ListView,DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib import messages
 from .models import Order, OrderItem
 from .forms import OrderForm
@@ -73,3 +73,8 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+def orderSucessView(request):
+    template_name = 'orders/order_success.html'
+    return render(request, template_name,  {})

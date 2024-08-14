@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Register Your Business</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <h4 class="mt-5">Basic Information</h4>
+        {{ form.business_name }}
+        {{ form.description }}
+        <label>Business Category</label>
+
+        {{ form.category }}
+        
+        <h4 class="mt-5">Contact Information</h4>
+        {{ form.website }}
+        {{ form.phone }}
+        {{ form.address }}
+        {{ form.city }}
+        {{ form.state }}
+        {{ form.country }}
+        {{ form.zip_code }}
+        
+        <h4 class="mt-5">Social Media</h4>
+        {{ form.facebook_url }}
+        {{ form.twitter_url }}
+        {{ form.instagram_url }}
+        
+        <h4 class="mt-5">Additional Details</h4>
+        <label>Logo:</label>
+        {{ form.logo }}
+        <label>Date founded:</label>
+        {{ form.founded_date }}
+        <label>Business Size:</label>
+        {{ form.size }}
+        <label>Working Hours:</label>
+        {{ form.operating_hours }}
+        <label>Tax ID:</label>
+        {{ form.tax_id }}
+        
+        <button type="submit" class="btn btn-primary mt-3">Register Business</button>
+    </form>
+</div>
+{% endblock %}

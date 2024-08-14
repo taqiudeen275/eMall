@@ -15,10 +15,12 @@ from django.views.generic import ListView,UpdateView,DetailView
 
 @login_required
 def dashboard(request):
+
+    my_products = Product.objects.filter(business=request.user.business)
     context = {
-        'total_products': Product.objects.count(),
-        'total_sales': Order.objects.filter(user=request.user).aggregate(total=Sum('total_amount'))['total'] or 0,
-        'active_ads': Ad.objects.filter(is_active=True).count(),
+        'total_products': Product.objects.filter(business=request.user.business).count(),
+        'total_sales': my_products.annotate(order_count=Count('order_items')).aggregate(total_orders=Sum('order_count'))['total_orders'] or 0,
+        'active_ads': Ad.objects.filter(is_active=True,created_by=request.user.business).count(),
         'recent_products': Product.objects.filter(business=request.user.business).order_by('-created_at')[:5],
     }
     return render(request, 'dashboard/index.html', context)
@@ -62,7 +64,7 @@ def ad_update(request, pk):
 
 
 def ad_list(request):
-    ads = Ad.objects.all().order_by('-created_at')
+    ads = Ad.objects.filter(created_by=request.user.business).order_by('-created_at')
     
     # Pagination
     paginator = Paginator(ads, 10)  # Show 10 ads per page

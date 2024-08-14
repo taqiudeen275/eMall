@@ -33,18 +33,16 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'product_list' %}">Products</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Categories</a>
-                        </li>
+                       
                     </ul>
-                    <form class="d-flex" action="#" method="get">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
-                            name="q">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    <form class="d-flex" action="{% url 'search_products' %}" method="get">
+                        
+                        <input type="text"  class="form-control me-2" name="q" placeholder="Search products...">
+    <button type="submit" class="btn btn-outline-success">Search</button>
                     </form>
                     <ul class="navbar-nav ms-auto">
                         {% if user.is_authenticated %}
-                        {% if user.is_staff %}
+                        {% if user.business %}
                         <li class="nav-item">
                             <a class="nav-link" href="/create/">
                                 <i class="fas fa-add"></i> Product

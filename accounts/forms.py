@@ -35,12 +35,12 @@ class SignupForm(forms.ModelForm):
       'placeholder': 'confirm password'
       }))
    user_type =forms.ChoiceField(label=False, widget=forms.Select(
-      attrs={'class':'bg-pr mb-10'}
+      attrs={'class':'bg-pr mb-10 form-control'}
     ), choices=User.userType_select)
  
 
    gender =forms.ChoiceField(label=False, widget=forms.Select(
-      attrs={'class':'bg-pr mb-10', 'id':'userType', 'placeholder': 'user type'}
+      attrs={'class':'bg-pr mb-10 form-control'}
     ), choices=User.gender_select)
   
    class Meta:

@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings
 from accounts.models import User
 from business.models import Business
-from products.models import Product  # Assuming you have a Product model
 
 
 class Ad(models.Model):

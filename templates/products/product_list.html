@@ -79,7 +79,11 @@
                                 <form method="post" action="{% url 'add_to_cart' product.id %}">
                                     <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
                                     {% csrf_token %}
+                                    {% if product.stock > 0 %}
                                     <button class="btn btn-primary btn-sm float-end" type="submit">Add to Cart</button>
+                                    {% else %}
+                                    <span class="badge bg-danger float-end">Out of Stock</span>
+                                {% endif %}
                                 </form>
                             </div>
                         </div>

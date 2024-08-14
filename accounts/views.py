@@ -38,8 +38,8 @@ def signupView(request):
             user.save()
             user = authenticate(username=user.username, password=password)
             login(request, user)
-            # if user.user_type == "Business":
-            #     return redirect(reverse('business:register'))
+            if user.user_type == "Business":
+                return redirect(reverse('business_registration'))
             return redirect('/products')
     context = {
         'form': form,

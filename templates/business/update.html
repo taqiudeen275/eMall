@@ -1,0 +1,28 @@
+<!-- templates/your_app/business_update.html -->
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Update Business Information{% endblock %}
+
+{% block free_content %}
+<div class="container mt-5">
+    <h2>Update Business Information</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary mt-3">Update Business</button>
+    </form>
+</div>
+{% endblock %}

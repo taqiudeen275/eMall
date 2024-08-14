@@ -1,0 +1,67 @@
+<!-- templates/your_app/business_detail.html -->
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{{ business.business_name }} - Profile{% endblock %}
+
+{% block free_content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            {% if business.logo %}
+                <img src="{{ business.logo.url }}" alt="{{ business.business_name }} Logo" class="img-fluid mb-3">
+            {% else %}
+                <div class="bg-secondary text-white p-3 text-center mb-3">No Logo</div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h1>{{ business.business_name }}</h1>
+            <p class="lead">{{ business.description }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Contact Information</h3>
+            <ul class="list-unstyled">
+                <li><strong>Website:</strong> <a href="{{ business.website }}" target="_blank">{{ business.website }}</a></li>
+                <li><strong>Phone:</strong> {{ business.phone }}</li>
+                <li><strong>Address:</strong> {{ business.address }}, {{ business.city }}, {{ business.state }}, {{ business.country }} {{ business.zip_code }}</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Business Details</h3>
+            <ul class="list-unstyled">
+                <li><strong>Category:</strong> {{ business.get_category_display }}</li>
+                <li><strong>Founded:</strong> {{ business.founded_date|date:"F j, Y" }}</li>
+                <li><strong>Size:</strong> {{ business.get_size_display }}</li>
+                <li><strong>Tax ID:</strong> {{ business.tax_id }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Social Media</h3>
+            <ul class="list-unstyled">
+                {% if business.facebook_url %}
+                    <li><a href="{{ business.facebook_url }}" target="_blank">Facebook</a></li>
+                {% endif %}
+                {% if business.twitter_url %}
+                    <li><a href="{{ business.twitter_url }}" target="_blank">Twitter</a></li>
+                {% endif %}
+                {% if business.instagram_url %}
+                    <li><a href="{{ business.instagram_url }}" target="_blank">Instagram</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Operating Hours</h3>
+            <p>{{ business.operating_hours|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'business_update' %}" class="btn btn-primary">Update Business Information</a>
+    </div>
+</div>
+{% endblock %}

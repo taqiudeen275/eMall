@@ -1,6 +1,7 @@
 from django.db import models
+from accounts.models import User
 from business.models import Business
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Category(models.Model):
@@ -14,8 +15,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class ProductImage(models.Model):
-    image = models.ImageField(upload_to='product_images')
 
 
 class Product(models.Model):
@@ -51,3 +50,20 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.product.name}"
+    
+
+
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        return f'{self.user.username} review for {self.product.name}'
