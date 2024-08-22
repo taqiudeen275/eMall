@@ -16,5 +16,6 @@ urlpatterns = [
 
     path('orders/', views.DashboardOrderListView.as_view(), name='dashboard_order_list'),
     path('orders/<int:pk>/', views.DashboardOrderDetailView.as_view(), name='dashboard_order_detail'),
-    path('dashboard/orders/<int:pk>/update-status/', views.DashboardOrderUpdateStatusView.as_view(), name='dashboard_order_update_status'),
+    path('orders/<int:pk>/update-status/', views.DashboardOrderUpdateStatusView.as_view(), name='dashboard_order_update_status'),
+    
 ]

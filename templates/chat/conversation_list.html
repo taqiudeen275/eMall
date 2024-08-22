@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="conversations-container">
+    <h2>Your Conversations</h2>
+    <div class="conversation-list">
+        {% for conversation in conversations %}
+            <a href="{% url 'chat:conversation_detail' conversation.id %}" class="conversation-item">
+                <div class="conversation-avatar">
+                    {% for participant in conversation.participants.all %}
+                        {% if participant != request.user %}
+                            {{ participant.username|first|upper }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="conversation-details">
+                    <div class="conversation-name">
+                        {% for participant in conversation.participants.all %}
+                            {% if participant != request.user %}
+                                {{ participant.username }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="conversation-last-message">
+                        <!-- You can add the last message here if available -->
+                        Last message preview...
+                    </div>
+                </div>
+                <div class="conversation-time">
+                    {{ conversation.updated_at|date:"M d, Y" }}
+                </div>
+            </a>
+        {% empty %}
+            <div class="no-conversations">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <p>You have no conversations yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .conversations-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .conversation-list {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+    }
+    .conversation-item:last-child {
+        border-bottom: none;
+    }
+    .conversation-item:hover {
+        background-color: #f8f9fa;
+    }
+    .conversation-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+    .conversation-details {
+        flex-grow: 1;
+    }
+    .conversation-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .conversation-last-message {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
+    .conversation-time {
+        font-size: 0.8em;
+        color: #6c757d;
+    }
+    .no-conversations {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        color: #6c757d;
+        text-align: center;
+    }
+    .no-conversations svg {
+        margin-bottom: 20px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}

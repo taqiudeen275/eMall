@@ -175,3 +175,7 @@ def search_products(request):
         'query': query
     }
     return render(request, 'products/search_results.html', context)
+
+
+def about_view(request):
+    return render(request, 'about.html')

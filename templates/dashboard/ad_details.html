@@ -2,29 +2,36 @@
 
 {% block free_content %}
 <div class="container mt-5">
-    <h1>{{ ad.title }}</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6">{{ ad.title }}</h1>
+        {% if ad.url %}
+            <a href="{{ ad.url }}" class="btn btn-outline-primary" target="_blank">Visit Ad Link</a>
+        {% endif %}
+    </div>
     
     <div class="row">
-        <div class="col-md-6">
-            <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid">
+        <div class="col-md-6 mb-4">
+            <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid rounded shadow-sm">
         </div>
         <div class="col-md-6">
-            <p><strong>Description:</strong> {{ ad.description }}</p>
-            <p><strong>Position:</strong> {{ ad.get_position_display }}</p>
-            <p><strong>Start Date:</strong> {{ ad.start_date }}</p>
-            <p><strong>End Date:</strong> {{ ad.end_date }}</p>
-            <p><strong>Status:</strong> {% if ad.is_active %}Active{% else %}Inactive{% endif %}</p>
-            <p><strong>Clicks:</strong> {{ ad.clicks }}</p>
-            <p><strong>Impressions:</strong> {{ ad.impressions }}</p>
-            <p><strong>Created By:</strong> {{ ad.created_by }}</p>
-            <p><strong>Created At:</strong> {{ ad.created_at }}</p>
-            <p><strong>Last Updated:</strong> {{ ad.updated_at }}</p>
-            <p><strong>Approval Status:</strong> {% if ad.is_approved %}Approved{% else %}Not Approved{% endif %}</p>
-            <p><strong>Current:</strong> {% if ad.is_current %}Yes{% else %}No{% endif %}</p>
-            
-            {% if ad.url %}
-                <a href="{{ ad.url }}" class="btn btn-primary" target="_blank">Visit Ad Link</a>
-            {% endif %}
+            <div class="bg-light p-4 rounded shadow-sm">
+                <h5 class="mb-3">Ad Details</h5>
+                <p><strong>Description:</strong> <span class="text-muted">{{ ad.description }}</span></p>
+                <p><strong>Position:</strong> <span class="text-muted">{{ ad.get_position_display }}</span></p>
+                <p><strong>Start Date:</strong> <span class="text-muted">{{ ad.start_date }}</span></p>
+                <p><strong>End Date:</strong> <span class="text-muted">{{ ad.end_date }}</span></p>
+                <p><strong>Status:</strong> <span class="{% if ad.is_active %}text-success{% else %}text-danger{% endif %}">{% if ad.is_active %}Active{% else %}Inactive{% endif %}</span></p>
+                <p><strong>Clicks:</strong> <span class="text-muted">{{ ad.clicks }}</span></p>
+                <p><strong>Impressions:</strong> <span class="text-muted">{{ ad.impressions }}</span></p>
+            </div>
+            <div class="bg-light p-4 rounded shadow-sm mt-4">
+                <h5 class="mb-3">Administrative Info</h5>
+                <p><strong>Created By:</strong> <span class="text-muted">{{ ad.created_by }}</span></p>
+                <p><strong>Created At:</strong> <span class="text-muted">{{ ad.created_at }}</span></p>
+                <p><strong>Last Updated:</strong> <span class="text-muted">{{ ad.updated_at }}</span></p>
+                <p><strong>Approval Status:</strong> <span class="{% if ad.is_approved %}text-success{% else %}text-danger{% endif %}">{% if ad.is_approved %}Approved{% else %}Not Approved{% endif %}</span></p>
+                <p><strong>Current:</strong> <span class="{% if ad.is_current %}text-success{% else %}text-danger{% endif %}">{% if ad.is_current %}Yes{% else %}No{% endif %}</span></p>
+            </div>
         </div>
     </div>
 </div>

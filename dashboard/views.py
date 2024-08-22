@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.db.models import Sum, Count
 from django.urls import reverse_lazy
 from business.models import Business
+from chat.models import Conversation
 from orders.models import Order, OrderItem
 from products.forms import ProductForm
 from products.models import Product, ProductImage
@@ -202,3 +203,7 @@ class DashboardOrderUpdateStatusView(LoginRequiredMixin, BusinessRequiredMixin, 
     def get_queryset(self):
         business = self.request.user.business
         return Order.objects.filter(items__product__business=business).distinct()
+    
+
+
+

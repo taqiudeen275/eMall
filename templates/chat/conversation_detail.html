@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="conversation-list">
+            {% for conversation in conversations %}
+                <a href="{% url 'chat:conversation_detail' conversation.id %}" class="conversation-item {% if conversation.messages.last.sender != request.user and not conversation.messages.last.is_read %}unread{% endif %}">
+                    <div class="conversation-avatar">
+                        {% for participant in conversation.participants.all %}
+                            {% if participant != request.user %}
+                                {{ participant.username|first|upper }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="conversation-details">
+                        <div class="conversation-name">
+                            {% for participant in conversation.participants.all %}
+                                {% if participant != request.user %}
+                                    {{ participant.username }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="conversation-preview">
+                            {% with last_message=conversation.messages.last %}
+                                {% if last_message %}
+                                    {{ last_message.content|truncatechars:50 }}
+                                {% else %}
+                                    No messages yet
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="conversation-time">
+                        {% with last_message=conversation.messages.last %}
+                            {% if last_message %}
+                                {{ last_message.timestamp|date:"M d, Y" }}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </a>
+            {% empty %}
+                <div class="no-conversations">
+                    <i class="fas fa-inbox fa-3x"></i>
+                    <p>No conversations yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Conversation pagination" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% endif %}
+                    
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+<div class="chat-container col-md-8">
+    <div class="chat-header">
+        <h2>Chat with 
+            {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                    {{ participant.username }}
+                {% endif %}
+            {% endfor %}
+        </h2>
+    </div>
+
+    <div id="message-container" class="chat-messages">
+        {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}outgoing{% else %}incoming{% endif %}">
+                <div class="message-content">
+                    {{ message.content }}
+                </div>
+                <div class="message-info">
+                    <span class="sender">{{ message.sender.username }}</span>
+                    <span class="timestamp">{{ message.timestamp|date:"M d, H:i" }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form id="message-form" class="chat-input">
+        {% csrf_token %}
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </button>
+    </form>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+    }
+    .chat-header {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+    .message {
+        max-width: 70%;
+        margin-bottom: 15px;
+        clear: both;
+    }
+    .message-content {
+        padding: 10px 15px;
+        border-radius: 18px;
+        background-color: #f1f0f0;
+        display: inline-block;
+    }
+    .message-info {
+        font-size: 0.8em;
+        margin-top: 5px;
+        color: #6c757d;
+    }
+    .incoming {
+        align-self: flex-start;
+    }
+    .outgoing {
+        align-self: flex-end;
+    }
+    .outgoing .message-content {
+        background-color: #007bff;
+        color: white;
+    }
+    .chat-input {
+        display: flex;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+    #message-input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        margin-right: 10px;
+    }
+    .chat-input button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .chat-input button:hover {
+        background-color: #0056b3;
+    }
+
+    .conversation-list {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+    }
+    .conversation-item:hover {
+        background-color: #f8f9fa;
+    }
+    .conversation-item.unread {
+        background-color: #e8f0fe;
+    }
+    .conversation-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+    .conversation-details {
+        flex-grow: 1;
+        overflow: hidden;
+    }
+    .conversation-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .conversation-preview {
+        font-size: 0.9em;
+        color: #6c757d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .conversation-time {
+        font-size: 0.8em;
+        color: #6c757d;
+        min-width: 60px;
+        text-align: right;
+    }
+    .no-conversations, .no-conversation-selected {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        color: #6c757d;
+        text-align: center;
+    }
+    .no-conversations i, .no-conversation-selected i {
+        margin-bottom: 20px;
+    }
+    .conversation-detail {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pagination {
+        margin-top: 20px;
+    }
+    .page-link {
+        color: #007bff;
+    }
+    .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const messageContainer = $('#message-container');
+        const messageForm = $('#message-form');
+        const messageInput = $('#message-input');
+        const conversationId = {{ conversation.id }};
+
+        function scrollToBottom() {
+            messageContainer.scrollTop(messageContainer[0].scrollHeight);
+        }
+
+        function addMessage(message) {
+            const messageHtml = `
+                <div class="message ${message.sender === '{{ request.user.username }}' ? 'outgoing' : 'incoming'}">
+                    <div class="message-content">${message.content}</div>
+                    <div class="message-info">
+                        <span class="sender">${message.sender}</span>
+                        <span class="timestamp">${message.timestamp}</span>
+                    </div>
+                </div>
+            `;
+            messageContainer.append(messageHtml);
+            scrollToBottom();
+        }
+
+        function loadMessages() {
+            $.get(`/chat/conversation/${conversationId}/messages/`, function(data) {
+                messageContainer.empty();
+                data.messages.forEach(addMessage);
+            });
+        }
+
+        messageForm.on('submit', function(e) {
+            e.preventDefault();
+            const content = messageInput.val().trim();
+            if (content) {
+                $.post(`/chat/conversation/${conversationId}/send/`, {
+                    content: content,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }, function(data) {
+                    if (data.status === 'success') {
+                        messageInput.val('');
+                        addMessage({
+                            sender: '{{ request.user.username }}',
+                            content: data.message_content,
+                            timestamp: data.timestamp
+                        });
+                    }
+                });
+            }
+        });
+
+        // Load initial messages
+        loadMessages();
+
+        // Poll for new messages every 5 seconds
+        setInterval(loadMessages, 2000);
+
+        scrollToBottom();
+    });
+</script>
+{% endblock %}

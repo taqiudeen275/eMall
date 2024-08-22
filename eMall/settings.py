@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'ads.apps.AdsConfig',
     'orders.apps.OrdersConfig',
+    'chat.apps.ChatConfig',
 
 ]
 

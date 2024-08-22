@@ -16,6 +16,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('orders/', include('orders.urls')),
     path('business/', include('business.urls')),
+    path('chat/', include('chat.urls', namespace='chat')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

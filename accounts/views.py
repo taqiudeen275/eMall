@@ -4,7 +4,7 @@ from .forms import *
 
 def loginView(request):
     if request.user.is_authenticated:
-        return redirect(reverse('home:index'))
+        return redirect(reverse('home'))
     next1 = request.GET.get('next')
     form = LoginForm(request.POST or None)
     if request.method == 'POST':
@@ -29,7 +29,7 @@ def loginView(request):
 def signupView(request):
     form = SignupForm(request.POST or None)
     if request.user.is_authenticated:
-        return redirect(reverse('home:index'))
+        return redirect(reverse('home'))
     if request.method == 'POST':
         if form.is_valid():
             user =form.save(commit= False)

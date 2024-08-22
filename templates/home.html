@@ -14,18 +14,52 @@
     .feature-icon {
         font-size: 3rem;
         margin-bottom: 1rem;
+        transition: transform 0.3s ease;
+    }
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
     }
     .category-card {
-        transition: transform 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
     }
     .category-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
-    .testimonial-img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 50%;
+    .product-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+    }
+    .section-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background-color: var(--primary-color);
     }
 </style>
 {% endblock %}
@@ -34,31 +68,43 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
-        <h1 class="display-3 mb-4">Discover Unique Treasures</h1>
+        <h1 class="display-3 mb-4 fw-bold">Discover Unique Treasures</h1>
         <p class="lead mb-5">Shop from a curated collection of handcrafted and exclusive items.</p>
-        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">Shop Now</a>
+        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-5 py-3">Shop Now</a>
     </div>
 </section>
 
 <!-- Features Section -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Why Choose Us</h2>
+        <h2 class="text-center mb-5 section-title">Why Choose Us</h2>
         <div class="row">
-            <div class="col-md-4 text-center mb-4">
-                <i class="bi bi-gift feature-icon text-primary"></i>
-                <h3>Unique Products</h3>
-                <p>Discover one-of-a-kind items you won't find anywhere else.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-gift feature-icon text-primary"></i>
+                        <h3 class="h4 mb-3">Unique Products</h3>
+                        <p class="text-muted">Discover one-of-a-kind items you won't find anywhere else.</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 text-center mb-4">
-                <i class="bi bi-shield-check feature-icon text-primary"></i>
-                <h3>Secure Shopping</h3>
-                <p>Shop with confidence knowing your transactions are safe and secure.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-shield-check feature-icon text-primary"></i>
+                        <h3 class="h4 mb-3">Secure Shopping</h3>
+                        <p class="text-muted">Shop with confidence knowing your transactions are safe and secure.</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 text-center mb-4">
-                <i class="bi bi-truck feature-icon text-primary"></i>
-                <h3>Fast Delivery</h3>
-                <p>Get your items quickly with our efficient shipping process.</p>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-truck feature-icon text-primary"></i>
+                        <h3 class="h4 mb-3">Fast Delivery</h3>
+                        <p class="text-muted">Get your items quickly with our efficient shipping process.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -67,14 +113,14 @@
 <!-- Featured Categories -->
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Shop by Category</h2>
+        <h2 class="text-center mb-5 section-title">Shop by Category</h2>
         <div class="row">
             {% for category in categories %}
             <div class="col-md-4 mb-4">
                 <div class="card category-card">
                     <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
                     <div class="card-body text-center">
-                        <h5 class="card-title">{{ category.name }}</h5>
+                        <h5 class="card-title mb-3">{{ category.name }}</h5>
                         <a href="{% url 'category_products' category.slug %}" class="btn btn-outline-primary">View Products</a>
                     </div>
                 </div>
@@ -87,16 +133,16 @@
 <!-- Featured Products -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Featured Products</h2>
+        <h2 class="text-center mb-5 section-title">Featured Products</h2>
         <div class="row">
             {% for product in featured_products %}
             <div class="col-md-3 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 product-card">
                     <img src="{{ product.images.first.image.url }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">${{ product.price }}</p>
-                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+                        <h5 class="card-title mb-3">{{ product.name }}</h5>
+                        <p class="card-text text-primary fw-bold">${{ product.price }}</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary w-100">View Details</a>
                     </div>
                 </div>
             </div>
@@ -105,14 +151,11 @@
     </div>
 </section>
 
-<!-- Testimonials -->
-
-
 <!-- Call to Action -->
 <section class="py-5 bg-primary text-white">
     <div class="container text-center">
-        <h2 class="mb-4">Ready to start shopping?</h2>
-        <a href="{% url 'product_list' %}" class="btn btn-light btn-lg">Explore Our Collection</a>
+        <h2 class="mb-4 fw-bold">Ready to start shopping?</h2>
+        <a href="{% url 'product_list' %}" class="btn btn-light btn-lg px-5 py-3">Explore Our Collection</a>
     </div>
 </section>
 {% endblock %}

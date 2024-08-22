@@ -1,0 +1,190 @@
+{% extends 'dashboard/base.html' %}
+
+{% block free_content %}
+<div class="business-inbox-container">
+    <h2>Business Message Inbox</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="conversation-list">
+                {% for conversation in page_obj %}
+                    <a href="{% url 'chat:conversation_detail' conversation.id %}" class="conversation-item {% if conversation.messages.last.sender != request.user and not conversation.messages.last.is_read %}unread{% endif %}">
+                        <div class="conversation-avatar">
+                            {% for participant in conversation.participants.all %}
+                                {% if participant != request.user %}
+                                    {{ participant.username|first|upper }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="conversation-details">
+                            <div class="conversation-name">
+                                {% for participant in conversation.participants.all %}
+                                    {% if participant != request.user %}
+                                        {{ participant.username }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="conversation-preview">
+                                {% with last_message=conversation.messages.last %}
+                                    {% if last_message %}
+                                        {{ last_message.content|truncatechars:50 }}
+                                    {% else %}
+                                        No messages yet
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div class="conversation-time">
+                            {% with last_message=conversation.messages.last %}
+                                {% if last_message %}
+                                    {{ last_message.timestamp|date:"M d, Y" }}
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </a>
+                {% empty %}
+                    <div class="no-conversations">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>No conversations yet.</p>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Conversation pagination" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif %}
+                        
+                        {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-8">
+            <div id="conversation-detail" class="conversation-detail">
+                <div class="no-conversation-selected">
+                    <i class="fas fa-comments fa-3x"></i>
+                    <p>Select a conversation to view messages.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .business-inbox-container {
+        padding: 20px;
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .conversation-list {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+    }
+    .conversation-item:hover {
+        background-color: #f8f9fa;
+    }
+    .conversation-item.unread {
+        background-color: #e8f0fe;
+    }
+    .conversation-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+    .conversation-details {
+        flex-grow: 1;
+        overflow: hidden;
+    }
+    .conversation-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .conversation-preview {
+        font-size: 0.9em;
+        color: #6c757d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .conversation-time {
+        font-size: 0.8em;
+        color: #6c757d;
+        min-width: 60px;
+        text-align: right;
+    }
+    .no-conversations, .no-conversation-selected {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        color: #6c757d;
+        text-align: center;
+    }
+    .no-conversations i, .no-conversation-selected i {
+        margin-bottom: 20px;
+    }
+    .conversation-detail {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pagination {
+        margin-top: 20px;
+    }
+    .page-link {
+        color: #007bff;
+    }
+    .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

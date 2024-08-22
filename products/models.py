@@ -48,8 +48,6 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='products/')
     is_primary = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"Image for {self.product.name}"
     
 
 

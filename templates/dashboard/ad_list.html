@@ -2,33 +2,38 @@
 
 {% block free_content %}
 <div class="container mt-5">
-    <h1>All Ads</h1>
-    
-    <div class="row">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6 fw-bold">Explore Our Ads</h1>
+        <a href="{% url 'ad_create' %}" class="btn btn-outline-primary">+ Post New Ad</a>
+    </div>
+
+    <div class="row g-4">
         {% for ad in page_obj %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    {% if ad.image %}
-                        <img src="{{ ad.image.url }}" class="card-img-top" alt="{{ ad.title }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ ad.title }}</h5>
-                        <p class="card-text">{{ ad.description|truncatewords:20 }}</p>
-                        <p class="card-text"><small class="text-muted">Position: {{ ad.get_position_display }}</small></p>
-                        <p class="card-text"><small class="text-muted">Created by: {{ ad.created_by }}</small></p>
-                        <a href="{% url 'ad_detail' ad.pk %}" class="btn btn-primary">View Details</a>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="position-relative">
+                            <img src="{{ ad.image.url }}" class="card-img-top rounded-top" alt="{{ ad.title }}">
+                        <div class="badge bg-primary position-absolute top-0 start-0 m-2">{{ ad.get_position_display }}</div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-truncate">{{ ad.title }}</h5>
+                        <p class="card-text text-muted mb-2">{{ ad.description|truncatewords:15 }}</p>
+                        <div class="mt-auto">
+                            <p class="card-text"><small class="text-muted">Created by {{ ad.created_by }}</small></p>
+                            <a href="{% url 'ad_detail' ad.pk %}" class="btn btn-primary btn-sm w-100">View Details</a>
+                        </div>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <div class="col-12">
-                <p>No ads available.</p>
+            <div class="col-12 text-center">
+                <p class="text-muted">No ads available. <a href="{% url 'ad_create' %}" class="text-primary">Post an ad</a> to get started!</p>
             </div>
         {% endfor %}
     </div>
-    
+
     <!-- Pagination -->
-    <nav aria-label="Page navigation">
+    <nav aria-label="Page navigation" class="mt-5">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
                 <li class="page-item">
